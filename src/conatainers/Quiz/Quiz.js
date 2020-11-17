@@ -4,9 +4,10 @@ import ActiveQuiz from '../../components/ActiveQuiz/ActieQuiz';
 import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz';
 export default class Quiz extends Component {
     state = {
+        results: {},
         activeQuestion: 0,
         answerState: null,
-        isFinished: true,
+        isFinished: false,
         quiz: [
             {
                 rightAnswerId: 1,
@@ -40,18 +41,22 @@ export default class Quiz extends Component {
                 return;
             }
         }
-
-        const question = this.state.quiz[this.state.activeQuestion]
+        console.log("checking answer Id", answerId)
+        const question = this.state.quiz[this.state.activeQuestion];
+        const results = this.state.results;
         if (question.rightAnswerId === answerId) {
+            if (!results[this.state.activeQuestion]) {
+                results[this.state.activeQuestion] = 'success';
+            }
             this.setState({
-                answerState: { [answerId]: 'success' }
+                answerState: { [answerId]: 'success' },
+                results
             })
             const timeout = window.setTimeout(() => {
-                console.log(" after timer with id ", answerId)
                 if (this.isQuizFinished()) {
                     this.setState({
                         isFinished: true
-                    })
+                    });
                 } else {
                     this.setState({
                         activeQuestion: this.state.activeQuestion + 1,
@@ -61,8 +66,10 @@ export default class Quiz extends Component {
                 window.clearTimeout(timeout)
             }, 1000)
         } else {
+            results[this.state.activeQuestion] = 'error';
             this.setState({
-                answerState: { [answerId]: 'error' }
+                answerState: { [answerId]: 'error' },
+                results
             })
         }
     }
@@ -77,7 +84,10 @@ export default class Quiz extends Component {
                     <h1>Reply to all questions</h1>
                     {
                         this.state.isFinished
-                            ? <FinishedQuiz/>
+                            ? <FinishedQuiz
+                                results={this.state.results}
+                                quiz={this.state.quiz}
+                            ></FinishedQuiz>
                             : <ActiveQuiz
                                 answers={this.state.quiz[this.state.activeQuestion].answers}
                                 question={this.state.quiz[this.state.activeQuestion].question}
