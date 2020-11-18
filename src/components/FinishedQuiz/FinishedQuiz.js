@@ -1,6 +1,6 @@
 import React from 'react';
 import classes from './FinishedQuiz.module.css';
-import Button from '../UI/Button';
+import Button from '../UI/Button/Button';
 
 const FinishedQuiz = props => {
     console.log(props.results)
