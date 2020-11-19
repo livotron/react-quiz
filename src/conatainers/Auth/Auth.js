@@ -2,6 +2,7 @@ import { Component } from 'react';
 import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.scss';
 import Input from '../../components/UI/Input/Input';
+import axios from 'axios';
 
 
 function validateEmail(email) {
@@ -96,12 +97,31 @@ class Auth extends Component {
         });
     };
 
-    loginHandler = () => {
-
+    loginHandler = async () => {
+        const authData = {
+            email: this.state.formControls.email.value,
+            password: this.state.formControls.password.value,
+            returnSecuretoken: true
+        }
+        try {
+            const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAIUgeASstpgL-GhFmgwihBXtLTCIfY2yE', authData);
+        } catch(e) {
+            console.log(e);
+        }
     };
 
-    registerHandler = () => {
-
+    registerHandler = async () => {
+        const authData = {
+            email: this.state.formControls.email.value,
+            password: this.state.formControls.password.value,
+            returnSecuretoken: true
+        }
+        try {
+            const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAIUgeASstpgL-GhFmgwihBXtLTCIfY2yE', authData);
+            console.log(response)
+        } catch(e) {
+            console.log(e);
+        }
     }
 
     submitHandler = (event) => {
@@ -131,7 +151,7 @@ class Auth extends Component {
                             onClick={this.registerHandler}
                             disabled={!this.state.isFormValid}
 
-                        >START AGAIN</Button>
+                        >REGISTER </Button>
                     </form>
                 </div>
             </div>
