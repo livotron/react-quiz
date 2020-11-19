@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import classes from './Quiz.module.css';
 import ActiveQuiz from '../../components/ActiveQuiz/ActieQuiz';
 import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz';
+import axios from '../../axios/axios-quiz';
 export default class Quiz extends Component {
     state = {
+        loading: true,
         results: {},
         activeQuestion: 0,
         answerState: null,
@@ -87,8 +89,13 @@ export default class Quiz extends Component {
         })
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         console.log('Quiz ID = ', this.props.match.params.id)
+        try {
+            const response = await axios.get(`/quizes/${this.props.match.params.id}.json`)
+        } catch(e) {
+            console.log(e);
+        }
     }
 
     render() {
