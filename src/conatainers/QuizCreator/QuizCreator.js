@@ -6,6 +6,7 @@ import Input from '../../components/UI/Input/Input';
 import Select from '../../components/UI/Select/Select';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import axios from '../../axios/axios-quiz';
+import { connect } from 'react-redux';
 
 function createOptionControl(number) {
     return createControl({
@@ -120,6 +121,10 @@ class QuizCreator extends Component {
         })
         console.log(event.target.value)
     }
+
+    componentDidMount() {
+        console.log(this.props)
+    }
     render() {
         return (
             <div className={classes.QuizCreator}>
@@ -163,4 +168,17 @@ class QuizCreator extends Component {
     }
 }
 
-export default QuizCreator;
+function mapStateToProps(state) {
+    return {
+        propsCounter: state.counter
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        onAdd: () => dispatch({type: 'ADD'}),
+        onSub: () => dispatch({type: 'SUB'})
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(QuizCreator);
