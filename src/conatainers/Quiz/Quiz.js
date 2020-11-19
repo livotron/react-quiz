@@ -3,6 +3,7 @@ import classes from './Quiz.module.css';
 import ActiveQuiz from '../../components/ActiveQuiz/ActieQuiz';
 import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz';
 import axios from '../../axios/axios-quiz';
+import Loader from '../../components/UI/Loader/Loader';
 export default class Quiz extends Component {
     state = {
         loading: true,
@@ -10,30 +11,7 @@ export default class Quiz extends Component {
         activeQuestion: 0,
         answerState: null,
         isFinished: false,
-        quiz: [
-            {
-                rightAnswerId: 1,
-                answers: [{ text: 'Black', id: 1 }, { text: 'Blue', id: 2 },
-                { text: 'Green', id: 3 }, { text: 'Yellow', id: 4 }],
-                question: "What color the sky is?"
-            },
-            {
-                question: "When some epic historical stuff happened?",
-                rightAnswerId: 3,
-                answers: [{ text: '1232', id: 1 }, { text: '33', id: 2 }, { text: '1994', id: 3 }]
-            },
-            {
-                question: "When some dull historical stuff happened?",
-                rightAnswerId: 3,
-                answers: [{ text: '1232', id: 1 }, { text: '33', id: 2 }, { text: '1994', id: 3 }]
-            },
-            {
-                question: "When some questionable historical stuff happened?",
-                rightAnswerId: 3,
-                answers: [{ text: '1232', id: 1 }, { text: '33', id: 2 }, { text: '1994', id: 3 }]
-            }
-
-        ]
+        quiz: []
     }
 
     onAnswerClickHandler = (answerId) => {
@@ -93,6 +71,12 @@ export default class Quiz extends Component {
         console.log('Quiz ID = ', this.props.match.params.id)
         try {
             const response = await axios.get(`/quizes/${this.props.match.params.id}.json`)
+            console.log(response);
+            this.setState({
+                quiz: response.data,
+                loading: false
+            }
+            )
         } catch(e) {
             console.log(e);
         }
@@ -104,7 +88,9 @@ export default class Quiz extends Component {
                 <div className={classes.QuizWrapper}>
                     <h1>Reply to all questions</h1>
                     {
-                        this.state.isFinished
+                        this.state.loading 
+                        ? <Loader/>
+                        : this.state.isFinished
                             ? <FinishedQuiz
                                 results={this.state.results}
                                 quiz={this.state.quiz}
