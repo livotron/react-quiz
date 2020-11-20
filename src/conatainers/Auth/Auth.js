@@ -3,6 +3,8 @@ import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.scss';
 import Input from '../../components/UI/Input/Input';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { auth } from '../../store/Actions/auth';
 
 
 function validateEmail(email) {
@@ -48,7 +50,7 @@ class Auth extends Component {
         if (validation.required) {
             isValid = value.trim() !== '' && isValid;
         }
-        if (validation.email){
+        if (validation.email) {
             isValid = validateEmail(value) && isValid;
         }
         if (validation.minLength) {
@@ -97,31 +99,28 @@ class Auth extends Component {
         });
     };
 
-    loginHandler = async () => {
-        const authData = {
-            email: this.state.formControls.email.value,
-            password: this.state.formControls.password.value,
-            returnSecuretoken: true
-        }
-        try {
-            const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAIUgeASstpgL-GhFmgwihBXtLTCIfY2yE', authData);
-        } catch(e) {
-            console.log(e);
-        }
+    loginHandler = () => {
+        console.log(this.props)
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            true
+        )
+
     };
 
-    registerHandler = async () => {
-        const authData = {
-            email: this.state.formControls.email.value,
-            password: this.state.formControls.password.value,
-            returnSecuretoken: true
-        }
-        try {
-            const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAIUgeASstpgL-GhFmgwihBXtLTCIfY2yE', authData);
-            console.log(response)
-        } catch(e) {
-            console.log(e);
-        }
+    registerHandler = () => {
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            false
+        )
+        // try {
+        //     const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAIUgeASstpgL-GhFmgwihBXtLTCIfY2yE', authData);
+        //     console.log(response)
+        // } catch (e) {
+        //     console.log(e);
+        // }
     }
 
     submitHandler = (event) => {
@@ -138,7 +137,7 @@ class Auth extends Component {
                             errorMessage="TEST"
                         />
                         <Input label="Password" /> */}
-                        { this.renderInputs() }
+                        {this.renderInputs()}
 
                         <Button
                             type="success"
@@ -158,5 +157,11 @@ class Auth extends Component {
         );
     }
 }
+function mapDispatchToProps(dispatch) {
+    return {
+        auth: (email, password, isLogin) => 
+            dispatch(auth(email, password, isLogin))
+    }
+}
 
-export default Auth;
+export default connect(null, mapDispatchToProps)(Auth);
