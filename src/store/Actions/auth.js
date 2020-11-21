@@ -41,3 +41,14 @@ export function logout() {
         type: AUTH_LOGOUT
     }
 }
+
+export function autoLogin() {
+    return dispatch => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            dispatch(logout());
+        }   else    {
+            dispatch(authSuccess(token))
+        }
+    }
+}
